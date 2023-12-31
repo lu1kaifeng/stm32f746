@@ -102,8 +102,8 @@ int main(void)
     /* Our main starts here */
     uint16_t ypos = 0, ymax = 0;
     int8_t yincr = 1;
-    BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
-    BSP_LCD_SetBackColor(LCD_COLOR_BLACK);
+    BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
+    BSP_LCD_SetBackColor(LCD_COLOR_WHITE);
 
     while(1) {
         if(ypos == 0) {
@@ -115,7 +115,7 @@ int main(void)
         }
 
         for(;yincr == 1 ? ypos < BSP_LCD_GetYSize() - Font24.Height : ypos > 0; ypos+=yincr) {
-            BSP_LCD_DisplayStringAt(0, ypos, (uint8_t*)" Penis Penis Penis Penis Penis ", CENTER_MODE);
+            BSP_LCD_DisplayStringAt(0, ypos, (uint8_t*)"Big Cock, I am finally working", CENTER_MODE);
         }
     }
 }

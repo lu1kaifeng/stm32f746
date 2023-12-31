@@ -146,6 +146,7 @@ endif
 # Generate dependency information
 CFLAGS += -MMD -MP -MF"$(@:%.o=%.d)"
 
+include lvgl/lvgl.mk
 
 #######################################
 # LDFLAGS
