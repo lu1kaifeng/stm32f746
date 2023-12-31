@@ -162,7 +162,9 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f7xx_hal.h"
+#include "stm32f7xx_hal_dma2d.h"
 
+#define HAL_DMA2D_MODULE_ENABLED
 #ifdef HAL_DMA2D_MODULE_ENABLED
 #if defined (DMA2D)
 

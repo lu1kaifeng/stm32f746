@@ -113,12 +113,13 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f7xx_hal.h"
+#include "stm32f7xx_hal_sdram.h"
 
 
 /** @addtogroup STM32F7xx_HAL_Driver
   * @{
   */
-
+#define HAL_SDRAM_MODULE_ENABLED
 #ifdef HAL_SDRAM_MODULE_ENABLED
 
 /** @defgroup SDRAM SDRAM

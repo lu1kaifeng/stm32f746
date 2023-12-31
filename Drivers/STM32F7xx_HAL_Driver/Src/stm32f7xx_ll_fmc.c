@@ -56,10 +56,12 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f7xx_hal.h"
+#include "stm32f7xx_ll_fmc.h"
 
 /** @addtogroup STM32F7xx_HAL_Driver
   * @{
   */
+#define HAL_SDRAM_MODULE_ENABLED
 #if defined(HAL_NOR_MODULE_ENABLED) || defined(HAL_SRAM_MODULE_ENABLED) || defined(HAL_NAND_MODULE_ENABLED) || defined(HAL_SDRAM_MODULE_ENABLED)
 
 /** @defgroup FMC_LL  FMC Low Layer

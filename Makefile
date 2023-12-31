@@ -50,12 +50,20 @@ Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_gpio.c \
 Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_dma.c \
 Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_dma_ex.c \
 Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pwr.c \
+Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_sdram.c \
+Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_ltdc.c \
+Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_dma2d.c \
 Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pwr_ex.c \
 Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal.c \
 Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_i2c.c \
 Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_i2c_ex.c \
 Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_exti.c \
-Core/Src/system_stm32f7xx.c  
+Core/Src/system_stm32f7xx.c  \
+Drivers/BSP/stm32746g_discovery.c \
+Drivers/BSP/stm32746g_discovery_lcd.c \
+Drivers/BSP/stm32746g_discovery_sdram.c \
+Drivers/Fonts/font24.c \
+Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_ll_fmc.c
 
 # ASM sources
 ASM_SOURCES =  \
@@ -119,7 +127,10 @@ C_INCLUDES =  \
 -IDrivers/STM32F7xx_HAL_Driver/Inc \
 -IDrivers/STM32F7xx_HAL_Driver/Inc/Legacy \
 -IDrivers/CMSIS/Device/ST/STM32F7xx/Include \
--IDrivers/CMSIS/Include
+-IDrivers/CMSIS/Include \
+-IDrivers/BSP \
+-IDrivers/rk043fn48h \
+-IDrivers/Fonts
 
 
 # compile gcc flags
@@ -151,6 +162,7 @@ LDFLAGS = $(MCU) -specs=nano.specs -T$(LDSCRIPT) $(LIBDIR) $(LIBS) -Wl,-Map=$(BU
 all: $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).bin
 
 
+
 #######################################
 # build the application
 #######################################
@@ -162,6 +174,9 @@ OBJECTS += $(addprefix $(BUILD_DIR)/,$(notdir $(ASM_SOURCES:.s=.o)))
 vpath %.s $(sort $(dir $(ASM_SOURCES)))
 OBJECTS += $(addprefix $(BUILD_DIR)/,$(notdir $(ASMM_SOURCES:.S=.o)))
 vpath %.S $(sort $(dir $(ASMM_SOURCES)))
+
+$(BUILD_DIR):
+	rd /s /q $(BUILD_DIR)
 
 $(BUILD_DIR)/%.o: %.c Makefile | $(BUILD_DIR) 
 	$(CC) -c $(CFLAGS) -Wa,-a,-ad,-alms=$(BUILD_DIR)/$(notdir $(<:.c=.lst)) $< -o $@
@@ -188,7 +203,7 @@ $(BUILD_DIR):
 # clean up
 #######################################
 clean:
-	-rm -fR $(BUILD_DIR)
+	rd /s /q $(BUILD_DIR)
   
 #######################################
 # dependencies
