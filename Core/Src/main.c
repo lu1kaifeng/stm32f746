@@ -22,6 +22,10 @@
 #include "fonts.h"
 #include "stm32746g_discovery.h"
 #include "stm32746g_discovery_lcd.h"
+#include "stm32746g_discovery_ts.h"
+#include "lvgl.h"
+#include "porting/lv_port_disp.h"
+#include "porting/lv_port_indev.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
@@ -60,7 +64,7 @@ static void CPU_CACHE_Enable(void);
 /* USER CODE BEGIN 0 */
 
 /* USER CODE END 0 */
-
+static void ConfigureTimers(void);
 static void LCD_Config(void);
 static void CPU_CACHE_Enable(void)
 {
@@ -70,7 +74,7 @@ static void CPU_CACHE_Enable(void)
     /* Enable D-Cache */
     SCB_EnableDCache();
 }
-
+void lv_example_get_started_1(void);
 /**
   * @brief  The application entry point.
   * @retval int
@@ -78,6 +82,7 @@ static void CPU_CACHE_Enable(void)
 int main(void)
 {
   /* USER CODE BEGIN 1 */
+  //causes dash-like artifact
     CPU_CACHE_Enable();
   /* USER CODE END 1 */
 
@@ -100,12 +105,29 @@ int main(void)
     LCD_Config();
 
     /* Our main starts here */
-    uint16_t ypos = 0, ymax = 0;
+    uint16_t ypos = 0, ymax = 0, xmax = 0;
     int8_t yincr = 1;
-    BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
-    BSP_LCD_SetBackColor(LCD_COLOR_WHITE);
+    //BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
+    //BSP_LCD_SetBackColor(LCD_COLOR_WHITE);
+    ymax = BSP_LCD_GetYSize();
+    xmax = BSP_LCD_GetXSize();
+    if((BSP_TS_Init(xmax,ymax) != TS_OK)){
+        Error_Handler();
+    }
+    if( BSP_TS_ITConfig() != TS_OK){
+        Error_Handler();
+    }
+    ConfigureTimers();
+        lv_init();
+    lv_port_disp_init();
+    lv_port_indev_init();
+    lv_example_get_started_1();
+    while (1)
+    {
+        //HAL_Delay(5);
 
-    while(1) {
+    }
+    /*while(1) {
         if(ypos == 0) {
             yincr = 1;
             ymax = BSP_LCD_GetYSize();
@@ -117,8 +139,83 @@ int main(void)
         for(;yincr == 1 ? ypos < BSP_LCD_GetYSize() - Font24.Height : ypos > 0; ypos+=yincr) {
             BSP_LCD_DisplayStringAt(0, ypos, (uint8_t*)"Big Cock, I am finally working", CENTER_MODE);
         }
-    }
+    }*/
 }
+
+void lv_example_get_started_1(void)
+{
+    lv_obj_t * btn = lv_button_create(lv_screen_active());     /*Add a button the current screen*/
+    lv_obj_set_pos(btn, 10, 10);                            /*Set its position*/
+    lv_obj_set_size(btn, 120, 50);                          /*Set its size*/
+    //lv_obj_add_event_cb(btn, btn_event_cb, LV_EVENT_ALL, NULL);           /*Assign a callback to the button*/
+
+    lv_obj_t * label = lv_label_create(btn);          /*Add a label to the button*/
+    lv_label_set_text(label, "Button");                     /*Set the labels text*/
+    lv_obj_center(label);
+
+    static lv_style_t style;
+    lv_style_init(&style);
+
+    lv_style_set_arc_color(&style, lv_palette_main(LV_PALETTE_RED));
+    lv_style_set_arc_width(&style, 4);
+
+    /*Create an object with the new style*/
+    lv_obj_t * obj = lv_arc_create(lv_screen_active());
+    lv_obj_add_style(obj, &style, 0);
+    lv_obj_center(obj);
+}
+
+static void ConfigureTimers(void)
+{
+    /* Enable the APB clock FOR TIM3  */
+    SET_BIT(RCC->APB1ENR, RCC_APB1ENR_TIM3EN);
+
+    /* fCK_PSC / (PSC[15:0] + 1)
+       (16 MHz / (15999+1)) = 1 KHz timer clock speed */
+    TIM3->PSC = 15999;
+
+    /* (1 KHz / 1000) = 1Hz = 1s */
+    /* So, this will generate the 1s delay */
+    TIM3->ARR = 5;
+
+    /* Enable the Interrupt */
+    TIM3->DIER |= TIM_DIER_UIE;
+
+    /* Clear the Interrupt Status */
+    TIM3->SR &= ~TIM_SR_UIF;
+
+    /* Enable NVIC Interrupt for Timer 3 */
+    NVIC_EnableIRQ(TIM3_IRQn);
+
+    /* Finally enable TIM3 module */
+    TIM3->CR1 = TIM_CR1_CEN;
+
+
+
+    /* Enable the APB clock FOR TIM4  */
+    SET_BIT(RCC->APB1ENR, RCC_APB1ENR_TIM4EN);
+
+    /* fCK_PSC / (PSC[15:0] + 1)
+       (16 MHz / (15999+1)) = 1 KHz timer clock speed */
+    TIM4->PSC = 15999;
+
+    /* (1 KHz / 1000) = 1Hz = 1s */
+    /* So, this will generate the 1s delay */
+    TIM4->ARR = 5;
+
+    /* Enable the Interrupt */
+    TIM4->DIER |= TIM_DIER_UIE;
+
+    /* Clear the Interrupt Status */
+    TIM4->SR &= ~TIM_SR_UIF;
+
+    /* Enable NVIC Interrupt for Timer 4 */
+    NVIC_EnableIRQ(TIM4_IRQn);
+
+    /* Finally enable TIM4 module */
+    TIM4->CR1 = TIM_CR1_CEN;
+}
+
 static void LCD_Config(void)
 {
     /* LCD Initialization */

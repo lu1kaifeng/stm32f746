@@ -116,7 +116,9 @@ typedef enum
 /** 
   * @brief  LCD FB_StartAddress  
   */
-#define LCD_FB_START_ADDRESS       ((uint32_t)0xC0000000)
+#define LVGL_FB_START_ADDRESS       ((uint32_t)0xC0000000)
+#define LCD_FB_START_ADDRESS        ((uint32_t)0xC0000000)
+//#define LCD_FB_START_ADDRESS       ((uint32_t)0xC007F800)
 
 /** 
   * @brief  LCD color  
@@ -217,6 +219,7 @@ void     BSP_LCD_DrawCircle(uint16_t Xpos, uint16_t Ypos, uint16_t Radius);
 void     BSP_LCD_DrawPolygon(pPoint Points, uint16_t PointCount);
 void     BSP_LCD_DrawEllipse(int Xpos, int Ypos, int XRadius, int YRadius);
 void     BSP_LCD_DrawBitmap(uint32_t Xpos, uint32_t Ypos, uint8_t *pbmp);
+void     BSP_LCD_DrawArea(uint32_t Xpos, uint32_t Ypos, uint32_t width,uint32_t height,uint8_t *pbmp);
 
 void     BSP_LCD_FillRect(uint16_t Xpos, uint16_t Ypos, uint16_t Width, uint16_t Height);
 void     BSP_LCD_FillCircle(uint16_t Xpos, uint16_t Ypos, uint16_t Radius);

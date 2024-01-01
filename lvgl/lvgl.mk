@@ -269,6 +269,8 @@ C_SOURCES += $(LVGL_PATH)/src/core/lv_group.c  \
          $(LVGL_PATH)/src/widgets/textarea/lv_textarea.c  \
          $(LVGL_PATH)/src/widgets/tileview/lv_tileview.c  \
          $(LVGL_PATH)/src/widgets/win/lv_win.c  \
+         $(LVGL_PATH)/porting/lv_port_disp.c \
+         $(LVGL_PATH)/porting/lv_port_indev.c
 
 #CSRCS += $(shell find $(LVGL_PATH)/demos -type f -name '*.c')
 #CSRCS += $(shell find $(LVGL_PATH)/examples -type f -name '*.c')

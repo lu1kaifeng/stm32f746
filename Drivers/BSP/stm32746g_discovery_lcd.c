@@ -118,12 +118,12 @@
 /** @defgroup STM32746G_DISCOVERY_LCD_Private_Variables STM32746G_DISCOVERY_LCD Private Variables
   * @{
   */ 
-static LTDC_HandleTypeDef  hLtdcHandler;
-static DMA2D_HandleTypeDef hDma2dHandler;
+LTDC_HandleTypeDef  hLtdcHandler;
+DMA2D_HandleTypeDef hDma2dHandler;
 
 /* Default LCD configuration with LCD Layer 1 */
-static uint32_t            ActiveLayer = 0;
-static LCD_DrawPropTypeDef DrawProp[MAX_LAYER_NUMBER];
+uint32_t            ActiveLayer = 0;
+LCD_DrawPropTypeDef DrawProp[MAX_LAYER_NUMBER];
 /**
   * @}
   */ 
@@ -161,7 +161,7 @@ uint8_t BSP_LCD_Init(void)
   hLtdcHandler.Init.AccumulatedActiveW = (RK043FN48H_WIDTH + RK043FN48H_HSYNC + RK043FN48H_HBP - 1);
   hLtdcHandler.Init.TotalHeigh = (RK043FN48H_HEIGHT + RK043FN48H_VSYNC + RK043FN48H_VBP + RK043FN48H_VFP - 1);
   hLtdcHandler.Init.TotalWidth = (RK043FN48H_WIDTH + RK043FN48H_HSYNC + RK043FN48H_HBP + RK043FN48H_HFP - 1);
-  
+
   /* LCD clock configuration */
   BSP_LCD_ClockConfig(&hLtdcHandler, NULL);
 
@@ -180,6 +180,7 @@ uint8_t BSP_LCD_Init(void)
   hLtdcHandler.Init.DEPolarity = LTDC_DEPOLARITY_AL;  
   hLtdcHandler.Init.PCPolarity = LTDC_PCPOLARITY_IPC;
   hLtdcHandler.Instance = LTDC;
+
 
   if(HAL_LTDC_GetState(&hLtdcHandler) == HAL_LTDC_STATE_RESET)
   {
@@ -973,6 +974,39 @@ void BSP_LCD_DrawBitmap(uint32_t Xpos, uint32_t Ypos, uint8_t *pbmp)
     pbmp -= width*(bit_pixel/8);
   } 
 }
+static void LL_ConvertLineToRGB565(void *pSrc, void *pDst, uint32_t xSize, uint32_t ColorMode);
+/**
+  * @brief  Draws a area loaded in memory in ARGB888 format (32 bits per pixel).
+  * @param  Xpos: Bmp X position in the LCD
+  * @param  Ypos: Bmp Y position in the LCD
+  * @param  pbmp: Pointer to Bmp picture address in the internal Flash
+  * @retval None
+  */
+void BSP_LCD_DrawArea(uint32_t Xpos, uint32_t Ypos,uint32_t width,uint32_t height, uint8_t *pbmp)
+{
+    uint32_t index = 0, bit_pixel = 0;
+    volatile uint32_t address;
+    uint32_t input_color_mode = DMA2D_ARGB8888;
+
+    /* Read bit/pixel */
+
+
+    /* Set the address */
+    address = hLtdcHandler.LayerCfg[ActiveLayer].FBStartAdress + (((BSP_LCD_GetXSize()*Ypos) + Xpos)*(4));
+
+
+
+    /* Convert picture to ARGB8888 pixel format */
+    for(index=0; index < height; index++)
+    {
+        /* Pixel format conversion */
+        LL_ConvertLineToARGB8888((uint32_t *)pbmp, (uint32_t *)address, width * 4, input_color_mode);
+
+        /* Increment the source and destination buffers */
+        address+=  (BSP_LCD_GetXSize()*4);
+        pbmp += (width*4);
+    }
+}
 
 /**
   * @brief  Draws a full rectangle.
@@ -1532,6 +1566,35 @@ static void LL_ConvertLineToARGB8888(void *pSrc, void *pDst, uint32_t xSize, uin
       }
     }
   } 
+}
+
+static void LL_ConvertLineToRGB565(void *pSrc, void *pDst, uint32_t xSize, uint32_t ColorMode)
+{
+    /* Configure the DMA2D Mode, Color Mode and output offset */
+    hDma2dHandler.Init.Mode         = DMA2D_M2M_PFC;
+    hDma2dHandler.Init.ColorMode    = DMA2D_RGB565;
+    hDma2dHandler.Init.OutputOffset = 0;
+
+    /* Foreground Configuration */
+    hDma2dHandler.LayerCfg[1].AlphaMode = DMA2D_NO_MODIF_ALPHA;
+    hDma2dHandler.LayerCfg[1].InputAlpha = 0xFF;
+    hDma2dHandler.LayerCfg[1].InputColorMode = ColorMode;
+    hDma2dHandler.LayerCfg[1].InputOffset = 0;
+
+    hDma2dHandler.Instance = DMA2D;
+
+    /* DMA2D Initialization */
+    if(HAL_DMA2D_Init(&hDma2dHandler) == HAL_OK)
+    {
+        if(HAL_DMA2D_ConfigLayer(&hDma2dHandler, 1) == HAL_OK)
+        {
+            if (HAL_DMA2D_Start(&hDma2dHandler, (uint32_t)pSrc, (uint32_t)pDst, xSize, 1) == HAL_OK)
+            {
+                /* Polling For DMA transfer */
+                HAL_DMA2D_PollForTransfer(&hDma2dHandler, 10);
+            }
+        }
+    }
 }
 
 /**

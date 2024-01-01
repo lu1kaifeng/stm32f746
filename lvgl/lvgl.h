@@ -137,6 +137,7 @@ extern "C" {
 /*********************
  *      DEFINES
  *********************/
+#define LV_USE_DEV_VERSION
 #ifndef LV_USE_DEV_VERSION
 #warning "You are using the development version of LVGL which is not stable at this moment. For production use the release/v8.3 branch. To silence this warning add #define LV_USE_DEV_VERSION to lv_conf.h"
 #endif

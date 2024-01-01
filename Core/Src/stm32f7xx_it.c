@@ -20,6 +20,8 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "stm32f7xx_it.h"
+#include "stm32746g_discovery_ts.h"
+#include "lvgl.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 /* USER CODE END Includes */
@@ -186,6 +188,8 @@ void SysTick_Handler(void)
 
   /* USER CODE END SysTick_IRQn 0 */
   HAL_IncTick();
+    lv_tick_inc(1);
+
   /* USER CODE BEGIN SysTick_IRQn 1 */
 
   /* USER CODE END SysTick_IRQn 1 */
@@ -197,7 +201,33 @@ void SysTick_Handler(void)
 /* For the available peripheral interrupt handler names,                      */
 /* please refer to the startup file (startup_stm32f7xx.s).                    */
 /******************************************************************************/
-
+TS_StateTypeDef TS_State;
 /* USER CODE BEGIN 1 */
+void EXTI15_10_IRQHandler(void){
 
+    BSP_TS_GetState(&TS_State);
+    HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_13);
+}
+
+void TIM3_IRQHandler(void)
+{
+    /* if UIF flag is set */
+    if(TIM3->SR & TIM_SR_UIF)
+    {
+        lv_task_handler();
+        /* Clear the Interrupt Status */
+        TIM3->SR &= ~TIM_SR_UIF;
+    }
+}
+
+void TIM4_IRQHandler(void)
+{
+    /* if UIF flag is set */
+    if(TIM4->SR & TIM_SR_UIF)
+    {
+        lv_timer_handler();
+        /* Clear the Interrupt Status */
+        TIM4->SR &= ~TIM_SR_UIF;
+    }
+}
 /* USER CODE END 1 */
