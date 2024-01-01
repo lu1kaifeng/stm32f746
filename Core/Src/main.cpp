@@ -51,7 +51,10 @@
 /* USER CODE BEGIN PV */
 
 /* USER CODE END PV */
-
+extern "C"{
+    int _getpid(){return -1;}
+    int _kill(){return -1;}
+}
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MPU_Config(void);
