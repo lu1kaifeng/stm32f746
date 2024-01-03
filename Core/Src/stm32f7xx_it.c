@@ -22,6 +22,7 @@
 #include "stm32f7xx_it.h"
 #include "stm32746g_discovery_ts.h"
 #include "lvgl.h"
+#include "stm32f7xx_hal_ltdc.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 /* USER CODE END Includes */
@@ -229,5 +230,11 @@ void TIM4_IRQHandler(void)
         /* Clear the Interrupt Status */
         TIM4->SR &= ~TIM_SR_UIF;
     }
+}
+
+extern LTDC_HandleTypeDef  hLtdcHandler;
+void LTDC_IRQHandler(void)
+{
+    HAL_LTDC_IRQHandler(&hLtdcHandler);
 }
 /* USER CODE END 1 */

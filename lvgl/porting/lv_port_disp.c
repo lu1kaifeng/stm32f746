@@ -108,8 +108,9 @@ void disp_disable_update(void)
 static void disp_flush(lv_display_t * disp_drv, const lv_area_t * area, uint8_t * px_map)
 {
     if(disp_flush_enabled) {
+        SCB_CleanDCache();
         /*The most simple case (but also the slowest) to put all pixels to the screen one-by-one*/
-        //BSP_LCD_DrawArea(area->x1,area->y1,area->x2 - area->x1,area->y2 - area->y1,px_map);
+        BSP_LCD_DrawArea(area->x1, area->y1,area->x2 - area->x1 + 1,area->y2 - area->y1 +1, (uint32_t) px_map);
     }
 
     /*IMPORTANT!!!

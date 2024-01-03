@@ -189,6 +189,8 @@ uint8_t BSP_LCD_Init(void)
   }
   HAL_LTDC_Init(&hLtdcHandler);
 
+    HAL_NVIC_EnableIRQ(LTDC_IRQn);
+    HAL_LTDC_ProgramLineEvent(&hLtdcHandler,0);
   /* Assert display enable LCD_DISP pin */
   HAL_GPIO_WritePin(LCD_DISP_GPIO_PORT, LCD_DISP_PIN, GPIO_PIN_SET);
 
@@ -982,32 +984,30 @@ static void LL_ConvertLineToRGB565(void *pSrc, void *pDst, uint32_t xSize, uint3
   * @param  pbmp: Pointer to Bmp picture address in the internal Flash
   * @retval None
   */
-void BSP_LCD_DrawArea(uint32_t Xpos, uint32_t Ypos,uint32_t width,uint32_t height, uint8_t *pbmp)
+void BSP_LCD_DrawArea(uint32_t Xpos, uint32_t Ypos,uint32_t width,uint32_t height, uint32_t pbmp)
 {
-    uint32_t index = 0, bit_pixel = 0;
-    volatile uint32_t address;
-    uint32_t input_color_mode = DMA2D_ARGB8888;
-
-    /* Read bit/pixel */
-
-
-    /* Set the address */
-    address = hLtdcHandler.LayerCfg[ActiveLayer].FBStartAdress + (((BSP_LCD_GetXSize()*Ypos) + Xpos)*(4));
-
-
-
-    /* Convert picture to ARGB8888 pixel format */
-    for(index=0; index < height; index++)
-    {
-        /* Pixel format conversion */
-        LL_ConvertLineToARGB8888((uint32_t *)pbmp, (uint32_t *)address, width * 4, input_color_mode);
-
-        /* Increment the source and destination buffers */
-        address+=  (BSP_LCD_GetXSize()*4);
-        pbmp += (width*4);
-    }
+    DMA2D_DrawImage(pbmp,Xpos,Ypos,width,height);
 }
 
+void DMA2D_DrawImage(uint32_t data, uint32_t x, uint32_t y, uint32_t width, uint32_t height)
+{
+    DMA2D_HandleTypeDef hdma2d;
+    hdma2d.Instance = DMA2D;
+
+    hdma2d.Init.Mode = DMA2D_M2M;
+    hdma2d.Init.ColorMode = DMA2D_OUTPUT_ARGB8888;
+    hdma2d.Init.OutputOffset = BSP_LCD_GetXSize() - width;
+
+    // Foreground
+    hdma2d.LayerCfg[1].AlphaMode = DMA2D_NO_MODIF_ALPHA;
+    hdma2d.LayerCfg[1].InputColorMode = DMA2D_INPUT_ARGB8888;
+    hdma2d.LayerCfg[1].InputOffset = BSP_LCD_GetXSize() - width;
+
+    HAL_DMA2D_Init(&hdma2d);
+    HAL_DMA2D_ConfigLayer(&hdma2d, 1);
+    HAL_DMA2D_Start(&hdma2d, data+ (x + y * BSP_LCD_GetXSize()) * 4, LCD_FB_START_ADDRESS + (x + y * BSP_LCD_GetXSize()) * 4, width, height);
+    HAL_DMA2D_PollForTransfer(&hdma2d, 10);
+}
 /**
   * @brief  Draws a full rectangle.
   * @param  Xpos: X position
@@ -1501,7 +1501,7 @@ static void FillTriangle(uint16_t x1, uint16_t x2, uint16_t x3, uint16_t y1, uin
   * @param  ColorIndex: Color index
   * @retval None
   */
-static void LL_FillBuffer(uint32_t LayerIndex, void *pDst, uint32_t xSize, uint32_t ySize, uint32_t OffLine, uint32_t ColorIndex) 
+static void LL_FillBuffer(uint32_t LayerIndex, void *pDst, uint32_t xSize, uint32_t ySize, uint32_t OffLine, uint32_t ColorIndex)
 {
   /* Register to memory mode with ARGB8888 as color Mode */ 
   hDma2dHandler.Init.Mode         = DMA2D_R2M;
@@ -1530,6 +1530,7 @@ static void LL_FillBuffer(uint32_t LayerIndex, void *pDst, uint32_t xSize, uint3
     }
   } 
 }
+
 
 /**
   * @brief  Converts a line to an ARGB8888 pixel format.
