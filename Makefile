@@ -63,8 +63,11 @@ Drivers/BSP/stm32746g_discovery_lcd.c \
 Drivers/BSP/stm32746g_discovery_sdram.c \
 Drivers/Fonts/font24.c \
 Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_ll_fmc.c \
+Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_ll_sdmmc.c \
 Drivers/ft5336/ft5336.c \
-Drivers/BSP/stm32746g_discovery_ts.c
+Drivers/BSP/stm32746g_discovery_ts.c \
+Drivers/BSP/stm32746g_discovery_sd.c \
+Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_sd.c
 
 CXX_SOURCES = \
 Core/Src/main.cpp

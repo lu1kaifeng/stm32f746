@@ -157,6 +157,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f7xx_hal.h"
+#include "stm32f7xx_ll_sdmmc.h"
 
 #if defined(SDMMC1)
 
@@ -168,7 +169,7 @@
   * @brief Low layer module for SD
   * @{
   */
-
+#define HAL_SD_MODULE_ENABLED
 #if defined(HAL_SD_MODULE_ENABLED) || defined(HAL_MMC_MODULE_ENABLED)
 
 /* Private typedef -----------------------------------------------------------*/

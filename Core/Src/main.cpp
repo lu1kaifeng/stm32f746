@@ -26,6 +26,7 @@
 #include "lvgl.h"
 #include "porting/lv_port_disp.h"
 #include "porting/lv_port_indev.h"
+#include "stm32746g_discovery_sd.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
@@ -121,6 +122,7 @@ int main(void)
         Error_Handler();
     }
     ConfigureTimers();
+    BSP_SD_Init();
         lv_init();
     lv_port_disp_init();
     lv_port_indev_init();

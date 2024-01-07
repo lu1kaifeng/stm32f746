@@ -257,6 +257,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f7xx_hal.h"
+#include "stm32f7xx_hal_sd.h"
 
 #if defined(SDMMC1)
 
@@ -267,7 +268,7 @@
 /** @addtogroup SD
   * @{
   */
-
+#define HAL_SD_MODULE_ENABLED
 #ifdef HAL_SD_MODULE_ENABLED
 
 /* Private typedef -----------------------------------------------------------*/
