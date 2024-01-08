@@ -122,7 +122,7 @@ int main(void)
         Error_Handler();
     }
     ConfigureTimers();
-    BSP_SD_Init();
+
         lv_init();
     lv_port_disp_init();
     lv_port_indev_init();

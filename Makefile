@@ -67,7 +67,17 @@ Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_ll_sdmmc.c \
 Drivers/ft5336/ft5336.c \
 Drivers/BSP/stm32746g_discovery_ts.c \
 Drivers/BSP/stm32746g_discovery_sd.c \
-Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_sd.c
+Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_sd.c \
+Drivers/usb/Core/Src/usbd_conf.c \
+Drivers/usb/Core/Src/usbd_core.c \
+Drivers/usb/Core/Src/usbd_ctlreq.c \
+Drivers/usb/Core/Src/usbd_desc.c \
+Drivers/usb/Core/Src/usbd_ioreq.c  \
+Drivers/usb/Class/MSC/Src/usbd_msc.c \
+Drivers/usb/Class/MSC/Src/usbd_msc_bot.c \
+Drivers/usb/Class/MSC/Src/usbd_msc_data.c \
+Drivers/usb/Class/MSC/Src/usbd_msc_scsi.c \
+Drivers/usb/Class/MSC/Src/usbd_msc_storage.c
 
 CXX_SOURCES = \
 Core/Src/main.cpp
@@ -140,7 +150,9 @@ C_INCLUDES =  \
 -IDrivers/BSP \
 -IDrivers/rk043fn48h \
 -IDrivers/ft5336 \
--IDrivers/Fonts
+-IDrivers/Fonts \
+-IDrivers/usb/Core/Inc \
+-IDrivers/usb/Class/MSC/Inc
 
 
 # compile gcc flags
