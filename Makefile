@@ -64,20 +64,29 @@ Drivers/BSP/stm32746g_discovery_sdram.c \
 Drivers/Fonts/font24.c \
 Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_ll_fmc.c \
 Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_ll_sdmmc.c \
+Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_ll_usb.c \
 Drivers/ft5336/ft5336.c \
 Drivers/BSP/stm32746g_discovery_ts.c \
 Drivers/BSP/stm32746g_discovery_sd.c \
 Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_sd.c \
-Drivers/usb/Core/Src/usbd_conf.c \
-Drivers/usb/Core/Src/usbd_core.c \
-Drivers/usb/Core/Src/usbd_ctlreq.c \
-Drivers/usb/Core/Src/usbd_desc.c \
-Drivers/usb/Core/Src/usbd_ioreq.c  \
-Drivers/usb/Class/MSC/Src/usbd_msc.c \
-Drivers/usb/Class/MSC/Src/usbd_msc_bot.c \
-Drivers/usb/Class/MSC/Src/usbd_msc_data.c \
-Drivers/usb/Class/MSC/Src/usbd_msc_scsi.c \
-Drivers/usb/Class/MSC/Src/usbd_msc_storage.c
+Drivers/USBD/Core/Src/usbd_conf.c \
+Drivers/USBD/Core/Src/usbd_core.c \
+Drivers/USBD/Core/Src/usbd_ctlreq.c \
+Drivers/USBD/Core/Src/usbd_desc.c \
+Drivers/USBD/Core/Src/usbd_ioreq.c  \
+Drivers/USBD/Class/MSC/Src/usbd_msc.c \
+Drivers/USBD/Class/MSC/Src/usbd_msc_bot.c \
+Drivers/USBD/Class/MSC/Src/usbd_msc_data.c \
+Drivers/USBD/Class/MSC/Src/usbd_msc_scsi.c \
+Drivers/USBD/Class/MSC/Src/usbd_msc_storage.c \
+Drivers/USBH/Core/Src/usbh_conf.c \
+Drivers/USBH/Core/Src/usbh_core.c \
+Drivers/USBH/Core/Src/usbh_ctlreq.c \
+Drivers/USBH/Core/Src/usbh_ioreq.c \
+Drivers/USBH/Core/Src/usbh_pipes.c \
+Drivers/USBH/Class/MSC/Src/usbh_msc.c \
+Drivers/USBH/Class/MSC/Src/usbh_msc_bot.c \
+Drivers/USBH/Class/MSC/Src/usbh_msc_scsi.c
 
 CXX_SOURCES = \
 Core/Src/main.cpp
@@ -151,8 +160,10 @@ C_INCLUDES =  \
 -IDrivers/rk043fn48h \
 -IDrivers/ft5336 \
 -IDrivers/Fonts \
--IDrivers/usb/Core/Inc \
--IDrivers/usb/Class/MSC/Inc
+-IDrivers/USBD/Core/Inc \
+-IDrivers/USBD/Class/MSC/Inc \
+-IDrivers/USBH/Core/Inc \
+-IDrivers/USBH/Class/MSC/Inc
 
 
 # compile gcc flags

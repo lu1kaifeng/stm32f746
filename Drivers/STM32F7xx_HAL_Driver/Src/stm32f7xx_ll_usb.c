@@ -1027,7 +1027,7 @@ HAL_StatusTypeDef USB_EP0StartXfer(USB_OTG_GlobalTypeDef *USBx, USB_OTG_EPTypeDe
 
 /**
    * @brief  USB_EPStoptXfer  Stop transfer on an EP
-   * @param  USBx  usb device instance
+   * @param  USBx  USBD device instance
    * @param  ep pointer to endpoint structure
    * @retval HAL status
    */
@@ -1224,7 +1224,7 @@ HAL_StatusTypeDef USB_EPClearStall(USB_OTG_GlobalTypeDef *USBx, USB_OTG_EPTypeDe
 }
 
 /**
-  * @brief  USB_StopDevice : Stop the usb device mode
+  * @brief  USB_StopDevice : Stop the USBD device mode
   * @param  USBx  Selected device
   * @retval HAL status
   */
@@ -1263,7 +1263,7 @@ HAL_StatusTypeDef USB_StopDevice(USB_OTG_GlobalTypeDef *USBx)
 }
 
 /**
-  * @brief  USB_SetDevAddress : Stop the usb device mode
+  * @brief  USB_SetDevAddress : Stop the USBD device mode
   * @param  USBx  Selected device
   * @param  address  new device address to be assigned
   *          This parameter can be a value from 0 to 255

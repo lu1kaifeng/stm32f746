@@ -27,6 +27,9 @@
 #include "porting/lv_port_disp.h"
 #include "porting/lv_port_indev.h"
 #include "stm32746g_discovery_sd.h"
+#include "usbh_def.h"
+#include "usbh_core.h"
+#include "usbh_msc.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
@@ -83,6 +86,8 @@ void lv_example_get_started_1(void);
   * @brief  The application entry point.
   * @retval int
   */
+void USBH_UserProcess(USBH_HandleTypeDef * phost, uint8_t id);
+USBH_HandleTypeDef hUSBHost;
 int main(void)
 {
   /* USER CODE BEGIN 1 */
@@ -99,7 +104,11 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
+    /* Init Host Library */
+    volatile USBH_StatusTypeDef usbState = USBH_Init(&hUSBHost, USBH_UserProcess, 0);
 
+    /* Add Supported Class */
+    USBH_RegisterClass(&hUSBHost, USBH_MSC_CLASS);
   /* USER CODE END Init */
 
   /* Configure the system clock */
@@ -127,10 +136,12 @@ int main(void)
     lv_port_disp_init();
     lv_port_indev_init();
     lv_example_get_started_1();
+    USBH_Start(&hUSBHost);
     while (1)
     {
+        USBH_Process(&hUSBHost);
         //HAL_Delay(5);
-
+        //
     }
     /*while(1) {
         if(ypos == 0) {
@@ -168,6 +179,44 @@ void lv_example_get_started_1(void)
     lv_obj_t * obj = lv_arc_create(lv_screen_active());
     lv_obj_add_style(obj, &style, 0);
     lv_obj_center(obj);
+}
+
+void USBH_UserProcess(USBH_HandleTypeDef * phost, uint8_t id)
+{
+  /*switch (id)
+  {
+  case HOST_USER_SELECT_CONFIGURATION:
+    break;
+
+  case HOST_USER_DISCONNECTION:
+    Appli_state = APPLICATION_DISCONNECT;
+    if (f_mount(NULL, "", 0) != FR_OK)
+    {
+      LCD_ErrLog("ERROR : Cannot DeInitialize FatFs! \n");
+    }
+    if (FATFS_UnLinkDriver(USBDISKPath) != 0)
+    {
+      LCD_ErrLog("ERROR : Cannot UnLink FatFS Driver! \n");
+    }
+    break;
+
+  case HOST_USER_CLASS_ACTIVE:
+    Appli_state = APPLICATION_READY;
+    break;
+
+  case HOST_USER_CONNECTION:
+    if (FATFS_LinkDriver(&USBH_Driver, USBDISKPath) == 0)
+    {
+      if (f_mount(&USBH_fatfs, "", 0) != FR_OK)
+      {
+        LCD_ErrLog("ERROR : Cannot Initialize FatFs! \n");
+      }
+    }
+    break;
+
+  default:
+    break;
+  }*/
 }
 
 static void ConfigureTimers(void)
